@@ -40,6 +40,23 @@
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.vavr</groupId>
+                <artifactId>vavr</artifactId>
+                <version>${vavr.version}</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+                <type>jar</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <modules>
         <module>sink-elasticsearch</module>
         <module>sink-clickhouse</module>
