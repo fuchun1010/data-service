@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 /**
  * @author tank198435163.com
  */
-public class InnerFunction {
+public class InnerFunctionTest {
 
   @Test
   public void testFunctions() {
