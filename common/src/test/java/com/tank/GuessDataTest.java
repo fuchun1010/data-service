@@ -152,7 +152,7 @@ public class GuessDataTest {
           partialCorrect++;
         }
       }
-      
+
       return String.format("%dA%dB", fullCorrect, partialCorrect);
     }
 
