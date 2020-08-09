@@ -16,3 +16,6 @@ sink-mysql/sink-mysql.iml
 
 sink-screen/target/
 sink-screen/sink-screen.iml
+
+source-kafka/target/
+source-kafka/source-kafka.iml
