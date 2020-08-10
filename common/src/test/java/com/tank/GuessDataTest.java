@@ -1,8 +1,8 @@
 package com.tank;
 
-import lombok.NonNull;
-import lombok.val;
-import lombok.var;
+import com.google.common.collect.Maps;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.junit.Test;
 
 import java.util.*;
@@ -52,7 +52,7 @@ public class GuessDataTest {
     val userInput = new UserInputs();
     List<Integer> inputs = userInput.transform2List("1,2,3,4");
 
-    val map = new HashMap<Integer, Integer>(32);
+    val map = Maps.<Integer, Integer>newHashMap();
 
     map.put(1, 0);
     map.put(4, 1);
@@ -62,7 +62,7 @@ public class GuessDataTest {
     val playGame = new PlayGame<Integer>();
 
     val result = playGame.publishResult(inputs, map);
-    System.out.println(result);
+    System.out.println(result.toRender());
   }
 
   private static class UserInputs {
@@ -130,11 +130,12 @@ public class GuessDataTest {
      * @param answer
      * @return
      */
-    public String publishResult(@NonNull List<Integer> userInputs,
-                                @NonNull Map<Integer, Integer> answer) {
+    public Judgement publishResult(@NonNull List<Integer> userInputs,
+                                   @NonNull Map<Integer, Integer> answer) {
 
       int fullCorrect = 0;
       int partialCorrect = 0;
+      val judgement = new Judgement();
 
       val size = userInputs.size();
       for (int index = 0; index < size; index++) {
@@ -144,16 +145,19 @@ public class GuessDataTest {
         val isFullCorrect = answer.containsKey(value) && answer.get(value) == index;
         if (isFullCorrect) {
           fullCorrect++;
+          judgement.setFullCorrect(fullCorrect);
           continue;
         }
 
         val isPartialCorrect = answer.containsKey(value);
         if (isPartialCorrect) {
           partialCorrect++;
+          judgement.setPartialCorrect(partialCorrect);
+
         }
       }
 
-      return String.format("%dA%dB", fullCorrect, partialCorrect);
+      return judgement;
     }
 
   }
@@ -172,6 +176,21 @@ public class GuessDataTest {
     }
 
     final private ThreadLocalRandom random = ThreadLocalRandom.current();
+
+  }
+
+  @Getter
+  @Setter
+  @Accessors(chain = true)
+  private static class Judgement {
+
+    public String toRender() {
+      return String.format("%dA%dB", this.fullCorrect, this.partialCorrect);
+    }
+
+    private int partialCorrect = -1;
+
+    private int fullCorrect = -1;
 
   }
 }
