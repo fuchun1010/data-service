@@ -9,6 +9,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import java.util.Optional;
 import java.util.Properties;
 
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
@@ -32,6 +33,8 @@ public class KpConf {
     props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, vo.toBrokerList());
     props.put(ProducerConfig.ACKS_CONFIG, vo.getAck());
     props.put(ProducerConfig.LINGER_MS_CONFIG, vo.getLinger());
+    
+    Optional.ofNullable(vo.getPartitionerClassName()).ifPresent(partitioner -> props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, partitioner));
 
     props.put(KEY_SERIALIZER_CLASS_CONFIG, serial);
     props.put(VALUE_SERIALIZER_CLASS_CONFIG, serial);

@@ -35,6 +35,8 @@ public class KpConfVo {
 
   private String linger;
 
+  private String partitionerClassName;
+
   @Getter(value = AccessLevel.PRIVATE)
   private String brokers;
 }
