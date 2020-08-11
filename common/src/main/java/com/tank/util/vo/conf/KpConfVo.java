@@ -33,6 +33,8 @@ public class KpConfVo {
 
   private String ack;
 
+  private String linger;
+
   @Getter(value = AccessLevel.PRIVATE)
   private String brokers;
 }

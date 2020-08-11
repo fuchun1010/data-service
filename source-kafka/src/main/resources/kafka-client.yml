@@ -1,4 +1,4 @@
-kafka-servers:
-  brokers: localhost
-  port: 9092
-  ack: 1
+brokers: localhost
+port: 9092
+ack: 1
+linger: 100
