@@ -2,19 +2,22 @@ package com.tank;
 
 import cn.hutool.bloomfilter.BloomFilterUtil;
 import cn.hutool.cache.CacheUtil;
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.Zodiac;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONStrFormater;
-import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnels;
+import com.google.common.base.MoreObjects;
 import com.tank.util.vo.health.Health;
-import lombok.val;
+import io.vavr.control.Try;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.charset.Charset;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -85,7 +88,50 @@ public class HuToolsTest {
     System.out.println(dateTimeStr);
   }
 
-  
+  @Test
+  public void testLoadClassByName() {
+    val personDto = new PersonDto();
+    personDto.setName("jack").setBirthday("1998-11-12");
+    val birthDate = DateUtil.parse(personDto.getBirthday(), DatePattern.NORM_DATE_FORMAT);
+    val chineseZodiac = Zodiac.getChineseZodiac(birthDate);
+    val zodiac = Zodiac.getZodiac(birthDate);
+    personDto.setChineseZodiac(chineseZodiac).setZodiac(zodiac);
+
+    val jsonObject = new JSONObject(personDto);
+    val jsonStr = jsonObject.toJSONString(2);
+    val prettyJsonStr = JSONStrFormater.format(jsonStr);
+    System.out.println(prettyJsonStr);
+
+    val jsonClazz = Try.of(() -> this.getClass().getClassLoader().loadClass(PersonDto.class.getName()))
+            .getOrElseThrow(() -> new ClassCastException("转换异常"));
+
+    val converter = new JSONObject(jsonStr, true);
+    final PersonDto target = converter.toBean((Type) jsonClazz);
+    Assert.assertEquals(target.getName(), "jack");
+    Assert.assertEquals(target.getBirthday(), "1998-11-12");
+    val age = DateUtil.date().between(birthDate).betweenYear(true);
+    System.out.println(age);
+  }
+
+  @Getter
+  @Setter
+  @AllArgsConstructor
+  @NoArgsConstructor
+  @Accessors(chain = true)
+  private static class PersonDto {
+    @Override
+    public String toString() {
+      return MoreObjects.toStringHelper(this)
+              .add("name", this.name)
+              .add("birthday", birthday)
+              .toString();
+    }
+
+    private String name;
+    private String birthday;
+    private String zodiac;
+    private String chineseZodiac;
+  }
 
   private int hash(Object value) {
     int h = 0;
