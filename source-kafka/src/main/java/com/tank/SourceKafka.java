@@ -8,7 +8,6 @@ import io.vavr.control.Try;
 import lombok.val;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 

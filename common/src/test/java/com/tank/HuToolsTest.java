@@ -6,6 +6,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.Zodiac;
 import cn.hutool.core.lang.WeightRandom;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.cron.CronUtil;
 import cn.hutool.cron.task.Task;
@@ -27,8 +28,11 @@ import org.junit.Test;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.lang.String.format;
@@ -168,6 +172,39 @@ public class HuToolsTest {
     CronUtil.start();
     System.out.println(result);
     latch.await();
+  }
+
+  @Test
+  public void testId() {
+    val snowflake = IdUtil.createSnowflake(10, 5);
+    int length = 100;
+    val ids = IntStream.rangeClosed(1, length)
+            .boxed()
+            .map(index -> snowflake.nextId())
+            .collect(Collectors.toSet());
+
+    Assert.assertEquals(ids.size(), length);
+
+    IntStream.range(1, length)
+            .boxed()
+            .map(index -> snowflake.nextId())
+            .map(StrUtil::toString)
+            .map(StrUtil::reverse)
+            .map(str -> str.substring(0, 8))
+            .forEach(System.out::println);
+
+    val result = IntStream.rangeClosed(1, length)
+            .boxed()
+            .map(index -> snowflake.nextId())
+            .map(StrUtil::toString)
+            .map(StrUtil::reverse)
+            .collect(Collectors.groupingBy(str -> String.valueOf(str.charAt(0))));
+
+    for (Map.Entry<String, List<String>> entry : result.entrySet()) {
+      val key = entry.getKey();
+      val size = entry.getValue().size();
+      System.out.println(StrUtil.format("key is: [{}],size is: [{}]", key, size));
+    }
   }
 
   @Test
