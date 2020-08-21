@@ -49,6 +49,6 @@ public class BytesTest {
     System.out.println(StrUtil.format("capacity:[{}]", buffer.capacity()));
     System.out.println("=========================================================");
   }
-
+  
 
 }
