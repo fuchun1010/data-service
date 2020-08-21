@@ -27,7 +27,9 @@ import org.junit.Test;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -231,6 +233,15 @@ public class HuToolsTest {
   public void testStrUtil() {
     val result = StrUtil.format("this is :{}, age is:{}", "jack", 21);
     System.out.println(result);
+  }
+
+  @Test
+  public void testConvert() {
+    val localDateTim = Instant.ofEpochMilli(System.currentTimeMillis())
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime();
+    val dateStr = DateUtil.format(localDateTim, "yyyy-MM-dd HH:mm:ss");
+    System.out.println(dateStr);
   }
 
 
