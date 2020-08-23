@@ -1,5 +1,6 @@
 package com.tank.util.jdbc;
 
+import io.vavr.control.Try;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.junit.Assert;
@@ -9,7 +10,23 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.util.Objects;
 
+/**
+ * @author tank198435163.com
+ */
 public class ConnBuilderTest {
+
+  @Test
+  public void queryWithoutParameters() throws Exception {
+    val url = "jdbc:clickhouse://localhost:8123/order";
+    val conn = this.connectionConnBuilder
+            .fetchConnection(ConnectionType.CK)
+            .map(opt -> opt.apply(url, "default", ""))
+            .map(Try::get)
+            .orElseThrow(() -> new Exception("connect db failure"));
+
+    val results = this.connectionConnBuilder.<Integer>queryWithoutParameters(conn, "select count(1) as counter from tab_persons", rs -> rs.getInt("counter"));
+    Assert.assertEquals(results.size(), 1);
+  }
 
   @Test
   public void changeData() {

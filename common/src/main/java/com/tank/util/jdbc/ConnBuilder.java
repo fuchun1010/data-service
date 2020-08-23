@@ -1,16 +1,15 @@
 package com.tank.util.jdbc;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
+import io.vavr.CheckedFunction1;
 import io.vavr.Function2;
 import io.vavr.Function3;
 import io.vavr.control.Try;
 import lombok.NonNull;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Map;
+import java.sql.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -18,10 +17,37 @@ import java.util.Optional;
  */
 public class ConnBuilder<T extends Connection> {
 
-  public ConnBuilder() {
-    initConnection();
+  public <R> List<R> queryWithoutParameters(@NonNull final T conn,
+                                            @NonNull final String sql,
+                                            @NonNull final CheckedFunction1<ResultSet, R> function) throws Exception {
+    return Try.of(() -> conn.prepareStatement(sql))
+            .map(pst -> {
+              ResultSet rs = null;
+              List<R> results = Lists.newArrayList();
+              try {
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                  R result = function.apply(rs);
+                  results.add(result);
+                }
+                return results;
+              } catch (Throwable throwable) {
+                throwable.printStackTrace();
+              } finally {
+                try {
+                  pst.close();
+                  if (Objects.nonNull(rs)) {
+                    System.out.println("close resultSet ok");
+                    rs.close();
+                  }
+                } catch (Exception exp) {
+                  exp.printStackTrace();
+                }
+              }
+              return results;
+            }).getOrElseThrow(() -> new Exception("clickhouse查询无参数sql异常"));
   }
-  
+
   public Boolean changeData(
           @NonNull final Connection conn,
           @NonNull final String sql,
@@ -49,19 +75,12 @@ public class ConnBuilder<T extends Connection> {
   }
 
   public Optional<Function3<String, String, String, Try<Connection>>> fetchConnection(@NonNull final ConnectionType connectionType) {
-    return Optional.ofNullable(this.connectionMapping.get(connectionType));
+    return Optional.ofNullable(this.create(connectionType));
   }
 
-  private void initConnection() {
-
-    final Function3<String, String, String, Try<Connection>> ckConnection = (url, user, password) -> Try
-            .of(() -> Class.forName("ru.yandex.clickhouse.ClickHouseDriver"))
-            .transform(driver -> Try.of(() -> DriverManager.getConnection(url, user, password)));
-
-    connectionMapping.put(ConnectionType.CK, ckConnection);
+  public Function3<String, String, String, Try<Connection>> create(@NonNull final ConnectionType connectionType) {
+    return (url, username, password) -> Try.of(() -> Class.forName(connectionType.getClassDriver()))
+            .transform(driver -> Try.of(() -> DriverManager.getConnection(url, username, password)));
   }
-
-  private final Map<ConnectionType, Function3<String, String, String, Try<Connection>>> connectionMapping = Maps.newHashMap();
-
 
 }

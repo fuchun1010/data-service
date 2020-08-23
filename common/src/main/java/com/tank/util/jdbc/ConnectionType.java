@@ -12,8 +12,11 @@ public enum ConnectionType {
   /**
    * list all supported db connection
    */
-  CK("Ck"), MYSQL("Mysql");
+  CK("Ck", "ru.yandex.clickhouse.ClickHouseDriver");
 
   @Getter
   private final String type;
+
+  @Getter
+  private final String classDriver;
 }
