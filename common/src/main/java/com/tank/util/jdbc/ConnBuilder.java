@@ -11,11 +11,59 @@ import java.sql.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 /**
  * @author tank198435163.com
  */
 public class ConnBuilder<T extends Connection> {
+
+  /**
+   *
+   * @param conn
+   * @param sql
+   * @param parameters
+   * @param pstFun
+   * @param function
+   * @param <R>
+   * @return
+   * @throws Exception
+   */
+  public <R> List<R> queryWithParameters(@NonNull final T conn,
+                                         @NonNull final String sql,
+                                         @NonNull final List<Object> parameters,
+                                         @NonNull final BiConsumer<PreparedStatement, List<Object>> pstFun,
+                                         @NonNull final CheckedFunction1<ResultSet, R> function) throws Exception {
+    return Try.of(() -> conn.prepareStatement(sql))
+            .map(pst -> {
+              ResultSet rs = null;
+              List<R> results = Lists.newArrayList();
+              try {
+                pstFun.accept(pst, parameters);
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                  R result = function.apply(rs);
+                  results.add(result);
+                }
+                return results;
+              } catch (Throwable throwable) {
+                throwable.printStackTrace();
+              } finally {
+                try {
+                  pst.close();
+                  if (Objects.nonNull(rs)) {
+                    System.out.println("close resultSet ok");
+                    rs.close();
+                  }
+                } catch (Exception exp) {
+                  exp.printStackTrace();
+                }
+              }
+              return results;
+            })
+            .getOrElseThrow(() -> new Exception("clickhouse查询无参数sql异常"));
+
+  }
 
   public <R> List<R> queryWithoutParameters(@NonNull final T conn,
                                             @NonNull final String sql,
