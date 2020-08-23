@@ -26,6 +26,7 @@
         <kafka-client.version>2.5.0</kafka-client.version>
         <jackson.yaml.version>2.9.8</jackson.yaml.version>
         <hutool.vesion>5.3.9</hutool.vesion>
+        <clickhouse-jdbc.version>0.2.4</clickhouse-jdbc.version>
 
     </properties>
 
@@ -93,6 +94,12 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.vesion}</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>ru.yandex.clickhouse</groupId>
+                <artifactId>clickhouse-jdbc</artifactId>
+                <version>${clickhouse-jdbc.version}</version>
                 <type>jar</type>
             </dependency>
         </dependencies>
