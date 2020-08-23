@@ -45,7 +45,8 @@ public class ConnBuilder<T extends Connection> {
                 }
               }
               return results;
-            }).getOrElseThrow(() -> new Exception("clickhouse查询无参数sql异常"));
+            })
+            .getOrElseThrow(() -> new Exception("clickhouse查询无参数sql异常"));
   }
 
   public Boolean changeData(

@@ -26,6 +26,9 @@ public class ConnBuilderTest {
 
     val results = this.connectionConnBuilder.<Integer>queryWithoutParameters(conn, "select count(1) as counter from tab_persons", rs -> rs.getInt("counter"));
     Assert.assertEquals(results.size(), 1);
+
+    val genders = this.connectionConnBuilder.<Integer>queryWithoutParameters(conn, "select CAST(gender,'Int8' ) as gender from tab_persons", rs -> rs.getInt("gender"));
+    Assert.assertEquals(genders.size(), 4);
   }
 
   @Test
