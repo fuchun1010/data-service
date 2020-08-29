@@ -13,25 +13,34 @@ public class DataSourceTest {
 
   @Test
   public void fetchSingle() {
-    final Optional<String> personOpt = this.dataSource.crud("ch.person",
+    final Optional<String> personOpt = this.dataSource.<String, String>fetchSingle("ch.person",
             "onePerson",
             Optional.of("500105198403050004"),
-            (location, parameter, session) -> session.selectList(location, parameter)
-    ).map(list -> list.get(0).toString());
-    System.out.println(personOpt);
+            (location, parameter, session) -> session.selectCursor(location, parameter)
+    );
+    System.out.println(personOpt.orElse("-"));
   }
 
   @Test
   public void fetchMultiple() {
-    final Optional<List<Person>> personsOpt = this.dataSource.crud("ch.person",
+    final Optional<List<Person>> personsOpt = this.dataSource.fetchMultiple("ch.person",
             "persons",
             Optional.empty(),
-            (location, parameter, session) -> session.selectList(location, parameter));
+            (location, parameter, session) -> session.selectCursor(location, parameter));
     Assert.assertTrue(personsOpt.isPresent());
     personsOpt.orElse(Lists.newArrayList())
             .stream()
             .map(Person::age)
             .forEach(System.out::println);
+  }
+
+  @Test
+  public void fetchMultiple2() {
+    final Optional<List<Person>> personsOpt = this.dataSource.fetchMultiple("ch.person",
+            "persons",
+            Optional.empty(),
+            (location, parameter, session) -> session.selectCursor(location, parameter));
+    Assert.assertTrue(personsOpt.isPresent());
   }
 
 
