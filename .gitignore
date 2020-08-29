@@ -19,3 +19,6 @@ sink-screen/sink-screen.iml
 
 source-kafka/target/
 source-kafka/source-kafka.iml
+
+source-clickhouse/target/
+source-clickhouse/source-clickhouse.iml

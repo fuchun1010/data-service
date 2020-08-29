@@ -27,7 +27,7 @@
         <jackson.yaml.version>2.9.8</jackson.yaml.version>
         <hutool.vesion>5.3.9</hutool.vesion>
         <clickhouse-jdbc.version>0.2.4</clickhouse-jdbc.version>
-
+        <mybatis.version>3.5.5</mybatis.version>
     </properties>
 
     <dependencies>
@@ -102,6 +102,12 @@
                 <version>${clickhouse-jdbc.version}</version>
                 <type>jar</type>
             </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+                <type>jar</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -112,5 +118,6 @@
         <module>sink-screen</module>
         <module>common</module>
         <module>source-kafka</module>
+        <module>source-clickhouse</module>
     </modules>
 </project>

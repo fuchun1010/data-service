@@ -1,0 +1,21 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ch.person">
+
+    <select id="onePerson" parameterType="String" resultType="String">
+        select cardId from tab_persons where cardId = #{cardId}
+    </select>
+
+    <select id="persons" resultType="person">
+        select cardId,
+                toInt8(gender) as gender,
+                birthDay,
+                job,toInt8(skinColor) as skinColor,
+                nationality,
+                toString(job) as jobs
+                from tab_persons
+    </select>
+
+</mapper>
