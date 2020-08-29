@@ -28,6 +28,7 @@
         <hutool.vesion>5.3.9</hutool.vesion>
         <clickhouse-jdbc.version>0.2.4</clickhouse-jdbc.version>
         <mybatis.version>3.5.5</mybatis.version>
+        <hikariCP.version>3.4.5</hikariCP.version>
     </properties>
 
     <dependencies>
@@ -106,6 +107,12 @@
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikariCP.version}</version>
                 <type>jar</type>
             </dependency>
         </dependencies>

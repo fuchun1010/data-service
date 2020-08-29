@@ -5,6 +5,5 @@ package com.tank;
  */
 public class ClickHouseSourceApp {
   public static void main(String[] args) {
-    
   }
 }
