@@ -10,11 +10,6 @@ public class HikariCpDataSourceFactory extends UnpooledDataSourceFactory {
 
   public HikariCpDataSourceFactory() {
     this.dataSource = new HikariDataSource();
-    this.dataSource.setConnectionTestQuery("select 1");
-    this.dataSource.setMaximumPoolSize(10);
-    this.dataSource.setIdleTimeout(60000);
-    this.dataSource.setConnectionTimeout(1000L);
   }
 
-  private final HikariDataSource dataSource;
 }
